@@ -1,9 +1,11 @@
 package android.cruciblecrab.quietmusicplayer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.CursorWrapper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -25,6 +27,9 @@ public class ListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
                 CursorWrapper selected = (CursorWrapper)(list.getItemAtPosition(myItemInt));
                 String text = selected.getString(2);
+                int id_s = selected.getInt(0);
+                MediaLogic.iid = id_s;
+                listClick(6);
                 //searcher.adapter.getItem(2);
                 //String text = searcher.cursor.getString(2);
 
@@ -44,7 +49,9 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    public void listClick(View view){
-
+    public void listClick(int id){
+        Log.d("XXXXXXXXXXX", "HI!");
+        Intent i= new Intent(getBaseContext(), MediaLogic.class);
+        startService(i);
     }
 }
