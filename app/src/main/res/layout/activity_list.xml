@@ -8,10 +8,10 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:id="@+id/listactivitylist"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/include" />
+        android:layout_above="@+id/include"/>
 
     <include layout="@layout/layout_music_control"
         android:id="@+id/include"/>
