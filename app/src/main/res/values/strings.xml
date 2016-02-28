@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Quiet Music Player</string>
+    <string name="vol_up">UP</string>
+    <string name="vol_down">DOWN</string>
+    <string name="album">Album</string>
+    <string name="songs">Song</string>
+    <string name="playlists">Playlist</string>
+    <string name="artists">Artist</string>
+    <string name="play">PLAY</string>
+    <string name="pause">PAUSE</string>
+    <string name="next">NEXT</string>
+    <string name="previous">PREV</string>
+</resources>
