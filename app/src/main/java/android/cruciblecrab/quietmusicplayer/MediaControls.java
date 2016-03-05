@@ -2,6 +2,8 @@ package android.cruciblecrab.quietmusicplayer;
 
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 
 /**
@@ -9,7 +11,7 @@ import android.widget.SeekBar;
  */
 public class MediaControls {
 
-
+    public static boolean playerPlaying = false;
 
 
 
@@ -36,6 +38,38 @@ public class MediaControls {
                 }
             }
         };
+    }
+
+    public Button.OnClickListener playButtonListener(){
+        return new Button.OnClickListener(){
+
+            public void onClick(View view){
+                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
+                if (binder != null) {
+                    if (binder.getMediaPlayer() != null && binder.playerReady()) {
+                        Button button = (Button) view;
+                        if (playerPlaying) {
+                            button.setText("Play");
+                            binder.pauseSong();
+                            playerPlaying = false;
+                        } else {
+                            button.setText("Pause");
+                            binder.unpauseSong();
+                            playerPlaying = true;
+                        }
+                    }
+                }
+            }
+
+        };
+    }
+
+    public void preparePlayButton(Button button){
+        if(!playerPlaying){
+            button.setText("Play");
+        }else{
+            button.setText("Pause");
+        }
     }
 
 }

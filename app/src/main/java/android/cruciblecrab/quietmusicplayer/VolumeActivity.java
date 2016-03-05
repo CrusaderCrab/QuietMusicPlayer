@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -38,6 +39,10 @@ public class VolumeActivity extends AppCompatActivity {
         //Make sure you update Seekbar on UI thread
         VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
         seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
+
+        Button playButton = (Button) findViewById(R.id.playbutton);
+        playButton.setOnClickListener(mediaControls.playButtonListener());
+        mediaControls.preparePlayButton(playButton);
     }
 
 

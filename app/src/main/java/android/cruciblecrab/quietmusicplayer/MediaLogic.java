@@ -102,6 +102,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.reset();
             mediaPlayer.setDataSource(getApplicationContext(), contentUri);
             playerReady = true;
+            MediaControls.playerPlaying = true;
             setMediaVolume();
             mediaPlayer.prepareAsync();
         }
@@ -145,6 +146,13 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public void pauseSong(){
+            mediaPlayer.pause();
+        }
+        public void unpauseSong(){
+            mediaPlayer.start();
         }
 
     }
