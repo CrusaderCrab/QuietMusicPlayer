@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -93,6 +94,14 @@ public class ListActivity extends AppCompatActivity {
         //Make sure you update Seekbar on UI thread
         ListActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
         seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
+
+        Button playButton = (Button) findViewById(R.id.playbutton);
+        playButton.setOnClickListener(mediaControls.playButtonListener());
+        mediaControls.preparePlayButton(playButton);
+        Button prevButton = (Button) findViewById(R.id.prevbutton);
+        prevButton.setOnClickListener(mediaControls.prevButtonListener());
+        Button nextButton = (Button) findViewById(R.id.nextbutton);
+        nextButton.setOnClickListener(mediaControls.nextButtonListener());
     }
 
     private void songClickListener(CursorWrapper selected) throws IOException{

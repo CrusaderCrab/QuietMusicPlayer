@@ -43,6 +43,10 @@ public class VolumeActivity extends AppCompatActivity {
         Button playButton = (Button) findViewById(R.id.playbutton);
         playButton.setOnClickListener(mediaControls.playButtonListener());
         mediaControls.preparePlayButton(playButton);
+        Button prevButton = (Button) findViewById(R.id.prevbutton);
+        prevButton.setOnClickListener(mediaControls.prevButtonListener());
+        Button nextButton = (Button) findViewById(R.id.nextbutton);
+        nextButton.setOnClickListener(mediaControls.nextButtonListener());
     }
 
 

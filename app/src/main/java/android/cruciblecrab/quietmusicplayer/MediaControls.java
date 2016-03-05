@@ -64,6 +64,35 @@ public class MediaControls {
         };
     }
 
+    public Button.OnClickListener nextButtonListener() {
+        return new Button.OnClickListener() {
+
+            public void onClick(View view) {
+                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
+                if (binder != null) {
+                    if (binder.getMediaPlayer() != null && binder.playerReady()) {
+                        binder.playNextSong();
+                    }
+                }
+            }
+        };
+    }
+
+    public Button.OnClickListener prevButtonListener() {
+        return new Button.OnClickListener() {
+
+            public void onClick(View view) {
+                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
+                if (binder != null) {
+                    if (binder.getMediaPlayer() != null && binder.playerReady()) {
+                        binder.playPreviousSong();
+                    }
+                }
+            }
+        };
+    }
+
+
     public void preparePlayButton(Button button){
         if(!playerPlaying){
             button.setText("Play");
