@@ -54,6 +54,13 @@ public class VolumeActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Button playButton = (Button) findViewById(R.id.playbutton);
+        mediaControls.preparePlayButton(playButton);
+    }
+
 
     public void songButtonClick(View view) {
         Intent intent = new Intent(this, ListActivity.class);

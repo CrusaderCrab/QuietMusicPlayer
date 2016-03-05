@@ -101,4 +101,8 @@ public class MediaControls {
         }
     }
 
+    public void setButtonToUnpause(Button button){
+        button.setText("Pause");
+    }
+
 }

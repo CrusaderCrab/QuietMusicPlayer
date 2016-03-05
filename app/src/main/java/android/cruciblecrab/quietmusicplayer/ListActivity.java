@@ -104,12 +104,21 @@ public class ListActivity extends AppCompatActivity {
         nextButton.setOnClickListener(mediaControls.nextButtonListener());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Button playButton = (Button) findViewById(R.id.playbutton);
+        mediaControls.preparePlayButton(playButton);
+    }
+
     private void songClickListener(CursorWrapper selected) throws IOException{
         String text = selected.getString(2);
         int id = selected.getInt(0);
         if(binder != null){
             Log.d("LIST_ACTIVITY", "Playing a song "+id);
             binder.playSong(id);
+            Button playButton = (Button) findViewById(R.id.playbutton);
+            mediaControls.setButtonToUnpause(playButton);
         }else{
             Log.d("LIST_ACTIVITY", "No binder on click " + id);
         }
