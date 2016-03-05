@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/toolbarCruc">
+        android:id="@+id/toolbarShell">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,7 +28,7 @@
         android:id="@+id/listactivitylist"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/include"
-        android:layout_below="@+id/toolbarCruc" />
+        android:layout_below="@+id/toolbarShell" />
 
     <include layout="@layout/layout_music_control"
         android:id="@+id/include"/>

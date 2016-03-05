@@ -54,10 +54,11 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnCompletionListener(this);
-            volume = VOLUME_STEP*10;
+            volume = VOLUME_STEP*30;
         }
         if(binder==null){
             binder = new LocalBinder();
+            MediaLogicConnection.BINDER = binder;
         }
         if(intent != null){
             //might have use later

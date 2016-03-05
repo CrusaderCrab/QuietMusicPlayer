@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,9 +32,9 @@ public class VolumeActivity extends AppCompatActivity {
         MediaLogicConnection connection = new MediaLogicConnection();
         Intent serviceIntent = new Intent(this, MediaLogic.class);
         startService(serviceIntent);
-        boolean res = bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
+        //boolean res = bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
         binder = MediaLogicConnection.getBinder();
-        Log.d("XXX_V.A_create", "res= " + res + " binder= " + binder + " BINDER= " + connection.BINDER);
+        //Log.d("XXX_V.A_create", "res= " + res + " binder= " + binder + " BINDER= " + connection.BINDER);
 
         mediaControls = new MediaControls();
         handler = new android.os.Handler();
@@ -49,7 +50,8 @@ public class VolumeActivity extends AppCompatActivity {
         Button nextButton = (Button) findViewById(R.id.nextbutton);
         nextButton.setOnClickListener(mediaControls.nextButtonListener());
 
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
     }
 
 
