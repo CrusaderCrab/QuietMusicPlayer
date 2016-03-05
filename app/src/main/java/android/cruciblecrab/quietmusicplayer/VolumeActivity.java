@@ -1,5 +1,6 @@
 package android.cruciblecrab.quietmusicplayer;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -47,6 +48,8 @@ public class VolumeActivity extends AppCompatActivity {
         prevButton.setOnClickListener(mediaControls.prevButtonListener());
         Button nextButton = (Button) findViewById(R.id.nextbutton);
         nextButton.setOnClickListener(mediaControls.nextButtonListener());
+
+
     }
 
 
