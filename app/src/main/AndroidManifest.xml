@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ListActivity"></activity>
-        <service android:name=".MediaLogic" />
+        <service android:name=".MediaLogic" android:exported="true" />
     </application>
 
 </manifest>

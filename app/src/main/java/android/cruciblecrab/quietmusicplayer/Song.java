@@ -6,9 +6,11 @@ package android.cruciblecrab.quietmusicplayer;
 public class Song {
 
     public String title;
-    public long id;
+    public int id;
+    //public float volume;
+    //public static final float NO_VOLUME = 88.0f;
 
-    public Song(String title, long id){
+    public Song(String title, int id){
         this.title = title;
         this.id = id;
     }

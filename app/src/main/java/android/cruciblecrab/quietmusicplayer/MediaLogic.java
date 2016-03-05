@@ -17,63 +17,140 @@ import java.util.ArrayList;
 /**
  * Created by CrusaderCrab on 28/02/2016.
  */
-public class MediaLogic extends Service implements MediaPlayer.OnPreparedListener{
+public class MediaLogic extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener{
 
-    public static float VOLUME_STEP = 0.1f;
+    public static float VOLUME_STEP = 0.01f;
     public static float MAX_VOLUME = 0.999f;
-    public static int iid = 200;
+    private static final String ACTION_PLAY = "crucibleCrab.qmp.PLAY";
 
-    private static final String ACTION_PLAY = "com.example.action.PLAY";
-    MediaPlayer mediaPlayer = null;
+    private float volume;
+    private MediaPlayer mediaPlayer = null;
+    private ArrayList<Song> songs;
+    private int songIndex;
+    private LocalBinder binder = null;
+    private boolean playerReady = false;
+
+    public static boolean hasPermissions;
 
     @Override
     public void onCreate(){
-        Log.d("XXXXXXXXXXXXXX", "onStartZ");
+
+    }
+
+    @Override
+    public void onDestroy(){
+        if(mediaPlayer!=null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Uri contentUri = ContentUris.withAppendedId(
-                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, iid);
-
-        //if (intent.getAction().equals(ACTION_PLAY)) {
-            mediaPlayer = new MediaPlayer(); // initialize it here
+        Log.d("XXX_M.L._START_COM", "started");
+        if(mediaPlayer==null){
+            mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
-            Log.d("XXXXXXXXXXXXXX", "onStartA");
-            try {
-                mediaPlayer.setDataSource(getApplicationContext(), contentUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        Log.d("XXXXXXXXXXXXXX", "onStartB");
-            mediaPlayer.prepareAsync(); // prepare async to not block main thread
-        //}
+            mediaPlayer.setOnCompletionListener(this);
+            volume = VOLUME_STEP*10;
+        }
+        if(binder==null){
+            binder = new LocalBinder();
+        }
+        if(intent != null){
+            //might have use later
+        }else{
+
+        }
         return START_STICKY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return new LocalBinder();
+        return binder;
     }
 
     /** Called when MediaPlayer is ready */
     public void onPrepared(MediaPlayer player) {
-        Log.d("XXXXXXXXXXXXXX", "onStartC");
         player.start();
     }
 
-    /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        songIndex = (songIndex+1)%songs.size();
+        try {
+            binder.playSong(songs.get(songIndex).id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public class LocalBinder extends Binder {
-        MediaLogic getService() {
+        public MediaLogic getService() {
             return MediaLogic.this;
         }
+
+        public MediaPlayer getMediaPlayer(){ return mediaPlayer; }
+
+        public void playSong(int id) throws IOException{
+            Uri contentUri = ContentUris.withAppendedId(
+                    android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(getApplicationContext(), contentUri);
+            playerReady = true;
+            setMediaVolume();
+            mediaPlayer.prepareAsync();
+        }
+
+        public float getVolume(){
+            return volume;
+        }
+        public void setVolume(float val){
+            volume = val;
+        }
+        public float alterVolume(float step){
+            volume += step;
+            if(volume >= MAX_VOLUME) volume = MAX_VOLUME;
+            else if(volume < 0 ) volume = 0;
+            setMediaVolume();
+            return volume;
+        }
+
+        public void setSongList(ArrayList<Song> _songs, int _songIndex){
+            songs = _songs;
+            songIndex = _songIndex;
+        }
+
+        public void startPlaying() throws IOException{
+            playSong(songs.get(songIndex).id);
+        }
+
+        public boolean playerReady(){
+            return playerReady;
+        }
+
+        public void playNextSong(){
+            onCompletion(mediaPlayer);
+        }
+
+        public void playPreviousSong(){
+            songIndex--;
+            songIndex = (songIndex<0?songs.size()-1:songIndex);
+            try {
+                binder.playSong(songs.get(songIndex).id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void setMediaVolume(){
+        if(playerReady)mediaPlayer.setVolume(volume, volume);
     }
 
 }

@@ -22,7 +22,8 @@
 
             android:layout_height="match_parent"
             android:text="@string/album"
-            android:id="@+id/albumbutton" />
+            android:id="@+id/albumbutton"
+            android:onClick="albumButtonClick"/>
 
         <Button
             android:layout_weight="1"
@@ -31,7 +32,8 @@
 
             android:layout_height="match_parent"
             android:text="@string/artists"
-            android:id="@+id/artistbutton" />
+            android:id="@+id/artistbutton"
+            android:onClick="artistButtonClick"/>
 
         <Button
             android:layout_weight="1"
@@ -67,6 +69,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/vol_up"
+            android:onClick="volumeUpClick"
             />
 
         <TextView
@@ -81,7 +84,8 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="@string/vol_down"/>
+            android:text="@string/vol_down"
+            android:onClick="volumeDownClick"/>
 
 
     </LinearLayout>
