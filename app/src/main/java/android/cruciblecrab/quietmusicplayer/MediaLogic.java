@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -21,7 +22,8 @@ import java.util.ArrayList;
 /**
  * Created by CrusaderCrab on 28/02/2016.
  */
-public class MediaLogic extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener{
+public class MediaLogic extends Service implements MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener{
 
     public static float VOLUME_STEP = 0.01f;
     public static float MAX_VOLUME = 0.999f;
@@ -119,6 +121,50 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
     }
 
+    private boolean requestAudioFocus(){
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+        return result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+    }
+
+    public void onAudioFocusChange(int focusChange) {
+        Log.d("XXX_M.L. AudioFoc","CALLED");
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                // resume playback
+                //if (mediaPlayer == null) initMediaPlayer();
+                //else if (!mMediaPlayer.isPlaying()) mMediaPlayer.start();
+                setMediaVolume();
+                Log.d("XXX_M.L. AudioFoc", "GAINED");
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS:
+                // Lost focus for an unbounded amount of time: stop playback and release media player
+                if (mediaPlayer.isPlaying()) binder.pauseSong();//mMediaPlayer.stop();
+                //mMediaPlayer.release();
+                //mMediaPlayer = null;
+                Log.d("XXX_M.L. AudioFoc","LOSS");
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                // Lost focus for a short time, but we have to stop
+                // playback. We don't release the media player because playback
+                // is likely to resume
+                if (mediaPlayer.isPlaying()) binder.pauseSong();
+                Log.d("XXX_M.L. AudioFoc","TRANSJIEN");
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                // Lost focus for a short time, but it's ok to keep playing
+                // at an attenuated level
+                float lowVol = volume / 10;
+                if (mediaPlayer.isPlaying()) mediaPlayer.setVolume(lowVol, lowVol);
+                Log.d("XXX_M.L. AudioFoc","DUCK");
+                break;
+        }
+    }
+
     private void unsetAsForegroundService(){
         stopForeground(true);
     }
@@ -139,6 +185,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             MediaControls.playerPlaying = true;
             setMediaVolume();
             setAsForegroundService();
+            requestAudioFocus();
             mediaPlayer.prepareAsync();
         }
 
@@ -190,6 +237,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         public void unpauseSong(){
             mediaPlayer.start();
             setAsForegroundService();
+            requestAudioFocus();
         }
 
     }
