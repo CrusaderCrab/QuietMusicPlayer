@@ -22,6 +22,12 @@
         </activity>
         <activity android:name=".ListActivity"></activity>
         <service android:name=".MediaLogic" android:exported="true" />
+
+        <receiver android:name=".MusicIntentReceiver">
+            <intent-filter>
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
