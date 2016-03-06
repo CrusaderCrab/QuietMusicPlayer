@@ -98,21 +98,29 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     private int NOTIFICATION_ID = 1;
     private void setAsForegroundService(){
 
-        Intent intent = new Intent("com.rj.notitfications.SECACTIVITY");
+        Intent notificationIntent = new Intent(getBaseContext(), VolumeActivity.class);
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), VolumeActivity.class),
+                notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setAutoCancel(false);
-        builder.setTicker("this is ticker text");
-        builder.setContentTitle("WhatsApp Notification");
-        builder.setContentText("You have a new message");
+        builder.setTicker("QMP: Song playing");
+        builder.setContentTitle("QMP: Song playing");
+        builder.setContentText("QMP: Song playing");
         builder.setContentIntent(pendingIntent);
         builder.setOngoing(true);
         builder.setNumber(100);
         startForeground(NOTIFICATION_ID,builder.build());
 
+    }
+
+    private void unsetAsForegroundService(){
+        stopForeground(true);
     }
 
     public class LocalBinder extends Binder {
@@ -177,9 +185,11 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
         public void pauseSong(){
             mediaPlayer.pause();
+            unsetAsForegroundService();
         }
         public void unpauseSong(){
             mediaPlayer.start();
+            setAsForegroundService();
         }
 
     }
