@@ -1,5 +1,7 @@
 package android.cruciblecrab.quietmusicplayer;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -92,6 +95,26 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     }
 
 
+    private int NOTIFICATION_ID = 1;
+    private void setAsForegroundService(){
+
+        Intent intent = new Intent("com.rj.notitfications.SECACTIVITY");
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                new Intent(getApplicationContext(), VolumeActivity.class),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        builder.setAutoCancel(false);
+        builder.setTicker("this is ticker text");
+        builder.setContentTitle("WhatsApp Notification");
+        builder.setContentText("You have a new message");
+        builder.setContentIntent(pendingIntent);
+        builder.setOngoing(true);
+        builder.setNumber(100);
+        startForeground(NOTIFICATION_ID,builder.build());
+
+    }
+
     public class LocalBinder extends Binder {
         public MediaLogic getService() {
             return MediaLogic.this;
@@ -107,6 +130,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             playerReady = true;
             MediaControls.playerPlaying = true;
             setMediaVolume();
+            setAsForegroundService();
             mediaPlayer.prepareAsync();
         }
 
