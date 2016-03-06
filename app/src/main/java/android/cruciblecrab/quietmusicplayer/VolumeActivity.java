@@ -49,6 +49,15 @@ public class VolumeActivity extends AppCompatActivity {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        MediaLogicConnection connection = new MediaLogicConnection();
+        Intent serviceIntent = new Intent(this, MediaLogic.class);
+        stopService(serviceIntent);
     }
 
     @Override
@@ -97,6 +106,6 @@ public class VolumeActivity extends AppCompatActivity {
 
     private void setVolumeText(float vol) {
         int v = (int) (Math.round(vol * 100));
-        volumeText.setText(v);
+        volumeText.setText(v+"");
     }
 }

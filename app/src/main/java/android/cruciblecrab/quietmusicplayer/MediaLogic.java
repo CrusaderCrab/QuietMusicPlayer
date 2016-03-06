@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -27,6 +28,8 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
     public static float VOLUME_STEP = 0.01f;
     public static float MAX_VOLUME = 0.999f;
+    public static float DEFAULT_VOLUME = VOLUME_STEP * 30;
+    private static float NO_SET_VOLUME = -88.0f;
     private static final String ACTION_PLAY = "crucibleCrab.qmp.PLAY";
 
     private float volume;
@@ -40,7 +43,9 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
     @Override
     public void onCreate(){
-
+        Bundle miscValues = SongInfoManager.retrieveMiscData(this);
+        float savedVolume = miscValues.getFloat(SongInfoManager.KEY_VOLUME, NO_SET_VOLUME);
+        volume = savedVolume;
     }
 
     @Override
@@ -50,6 +55,9 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        Bundle b = new Bundle();
+        b.putFloat(SongInfoManager.KEY_VOLUME, volume);
+        SongInfoManager.storeMiscData(b, this);
     }
 
 
@@ -61,7 +69,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK); //allowed to play even when phone is "sleeping"
-            volume = VOLUME_STEP*30;
+            volume = (volume==NO_SET_VOLUME?DEFAULT_VOLUME:volume);
         }
         if(binder==null){
             binder = new LocalBinder();
