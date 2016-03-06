@@ -60,6 +60,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         SongInfoManager.storeMiscData(b, this);
 
         SongInfoManager.storeSongList(songs, songIndex, this);
+        Log.d("XXX_DESTORYED","XXXXXXXXXXXX");
     }
 
 
@@ -79,20 +80,14 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             Bundle miscValues = SongInfoManager.retrieveMiscData(this);
             float savedVolume = miscValues.getFloat(SongInfoManager.KEY_VOLUME, DEFAULT_VOLUME);
             volume = savedVolume;
-
             SongInfoManager.SongList sl = SongInfoManager.getStoredSongList(this);
-            if(sl!= null && sl.songs!=null){
-                Log.d("XXX_M.L. songList", "Correctly Opened");
+            if (sl != null && sl.songs != null) {
                 songs = sl.songs;
                 songIndex = sl.index;
                 songsReady = true;
-            }else{
-                if(sl!=null)
-                    Log.d("XXX_M.L. songList", "sl not null: "+sl.songs);
-                else if(sl==null)
-                    Log.d("XXX_M.L. songList", "sl is null: "+sl);
             }
         }
+        Log.d("XXX_M.L_START_COM","Player is: "+mediaPlayer);
         return START_STICKY;
     }
 
@@ -165,7 +160,8 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
             case AudioManager.AUDIOFOCUS_LOSS:
                 // Lost focus for an unbounded amount of time: stop playback and release media player
-                if (mediaPlayer.isPlaying()) binder.pauseSong();//mMediaPlayer.stop();
+                if (mediaPlayer.isPlaying())
+                    binder.pauseSong();//mMediaPlayer.stop();
                 //mMediaPlayer.release();
                 //mMediaPlayer = null;
                 Log.d("XXX_M.L. AudioFoc","LOSS");
@@ -229,6 +225,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         public void setSongList(ArrayList<Song> _songs, int _songIndex){
             songs = _songs;
             songIndex = _songIndex;
+            songsReady = true;
         }
 
         public void startPlaying() throws IOException{

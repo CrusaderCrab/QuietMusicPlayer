@@ -118,7 +118,7 @@ public class ListActivity extends AppCompatActivity {
         int id = selected.getInt(0);
         if(binder != null){
             Log.d("LIST_ACTIVITY", "Playing a song " + id);
-            //binder.playSong(id);
+            binder.setMusicWanted(true);
             Button playButton = (Button) findViewById(R.id.playbutton);
             mediaControls.setButtonToUnpause(playButton);
         }else{
@@ -186,6 +186,7 @@ public class ListActivity extends AppCompatActivity {
                     songs.set(j, temp);
                 }
                 binder.setSongList(songs, 0);
+                binder.setMusicWanted(true);
                 try {
                     binder.startPlaying();
                 } catch (IOException e) {

@@ -53,14 +53,6 @@ public class VolumeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
-        MediaLogicConnection connection = new MediaLogicConnection();
-        Intent serviceIntent = new Intent(this, MediaLogic.class);
-        stopService(serviceIntent);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         Button playButton = (Button) findViewById(R.id.playbutton);
