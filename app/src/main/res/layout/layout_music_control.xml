@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="I like big Bananas"
+        android:text="no song selected"
         android:id="@+id/songtext"
         android:layout_below="@+id/playbutton"
         android:layout_alignParentRight="true"

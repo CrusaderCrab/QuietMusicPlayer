@@ -5,8 +5,12 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +20,8 @@ public class MediaControls {
 
     public static boolean playerPlaying = false;
     private static ArrayList<Button> playButtons = new ArrayList<Button>();
+    private static ArrayList<TextView> songNames = new ArrayList<TextView>();
+    private static int MAX_TITLE_LENGTH = 20;
 
 
     public SeekBar.OnSeekBarChangeListener seekBarChangeListener(){
@@ -110,18 +116,6 @@ public class MediaControls {
     }
 
 
-    /*public void preparePlayButton(Button button){
-        if(!playerPlaying){
-            button.setText("Play");
-        }else{
-            button.setText("Pause");
-        }
-    }
-
-    public void setButtonToUnpause(Button button){
-        button.setText("Pause");
-    }*/
-
     public static void setAllPlayButtons(boolean playing){
         String text = (playing?"pause":"play");
         for(Button pb : playButtons)
@@ -130,6 +124,17 @@ public class MediaControls {
 
     public static void addPlayButton(Button pb){
         playButtons.add(pb);
+    }
+
+    public static void setToSongName(TextView t){
+        MediaLogic.LocalBinder b = MediaLogicConnection.getBinder();
+        if(b!=null) {
+            String song = b.getCurrentSong().title;
+            if(song.length() > MAX_TITLE_LENGTH)
+                song = song.substring(0, MAX_TITLE_LENGTH);
+
+            t.setText(song);
+        }
     }
 
 }

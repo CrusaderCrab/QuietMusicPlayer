@@ -38,6 +38,8 @@ public class VolumeActivity extends AppCompatActivity {
         handler = new android.os.Handler();
         VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
         seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
+        TextView durationText = (TextView)findViewById(R.id.timetext);
+        VolumeActivity.this.runOnUiThread(new DurationRunnable(handler, durationText));
 
         Button playButton = (Button) findViewById(R.id.playbutton);
         playButton.setOnClickListener(mediaControls.playButtonListener());
@@ -60,6 +62,7 @@ public class VolumeActivity extends AppCompatActivity {
         Button playButton = (Button) findViewById(R.id.playbutton);
         //mediaControls.preparePlayButton(playButton);
         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
+        MediaControls.setToSongName((TextView)findViewById(R.id.songtext));
     }
 
 

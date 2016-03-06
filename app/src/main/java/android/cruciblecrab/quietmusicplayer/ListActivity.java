@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -121,6 +122,7 @@ public class ListActivity extends AppCompatActivity {
         Button playButton = (Button) findViewById(R.id.playbutton);
         //mediaControls.preparePlayButton(playButton);
         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
+        MediaControls.setToSongName((TextView) findViewById(R.id.songtext));
     }
 
     private void albumClickListener(CursorWrapper selected){

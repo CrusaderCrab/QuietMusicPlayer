@@ -252,6 +252,13 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             requestAudioFocus();
         }
 
+        public Song getCurrentSong(){
+            if(songs!=null && songIndex < songs.size() && songIndex >= 0){
+                return songs.get(songIndex);
+            }
+            return null;
+        }
+
     }
 
     private void setMediaVolume(){
