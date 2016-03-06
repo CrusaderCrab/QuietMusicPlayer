@@ -6,13 +6,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * Created by CrusaderCrab on 05/03/2016.
  */
 public class MediaControls {
 
     public static boolean playerPlaying = false;
-
+    private static ArrayList<Button> playButtons = new ArrayList<Button>();
 
 
     public SeekBar.OnSeekBarChangeListener seekBarChangeListener(){
@@ -51,19 +54,22 @@ public class MediaControls {
                         Button button = (Button) view;
                         if(binder.playerReady() && binder.songsReady()) {
                             if (playerPlaying) {
-                                button.setText("Play");
                                 binder.pauseSong();
                                 playerPlaying = false;
                             } else {
-                                button.setText("Pause");
                                 binder.unpauseSong();
                                 playerPlaying = true;
                             }
                         }else if(binder.songsReady() && !binder.playerReady() && !playerPlaying){
-                            binder.playCurrentSong();
+                            try {
+                                binder.startPlaying();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             button.setText("Pause");
                             playerPlaying = true;
                         }
+                        setAllPlayButtons(playerPlaying);
                     }
                 }
             }
@@ -79,6 +85,8 @@ public class MediaControls {
                 if (binder != null) {
                     if (binder.getMediaPlayer() != null && binder.playerReady()) {
                         binder.playNextSong();
+                        playerPlaying = true;
+                        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
                     }
                 }
             }
@@ -93,6 +101,8 @@ public class MediaControls {
                 if (binder != null) {
                     if (binder.getMediaPlayer() != null && binder.playerReady()) {
                         binder.playPreviousSong();
+                        playerPlaying = true;
+                        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
                     }
                 }
             }
@@ -100,7 +110,7 @@ public class MediaControls {
     }
 
 
-    public void preparePlayButton(Button button){
+    /*public void preparePlayButton(Button button){
         if(!playerPlaying){
             button.setText("Play");
         }else{
@@ -110,6 +120,16 @@ public class MediaControls {
 
     public void setButtonToUnpause(Button button){
         button.setText("Pause");
+    }*/
+
+    public static void setAllPlayButtons(boolean playing){
+        String text = (playing?"pause":"play");
+        for(Button pb : playButtons)
+            pb.setText(text);
+    }
+
+    public static void addPlayButton(Button pb){
+        playButtons.add(pb);
     }
 
 }

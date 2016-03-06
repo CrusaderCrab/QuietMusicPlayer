@@ -41,7 +41,9 @@ public class VolumeActivity extends AppCompatActivity {
 
         Button playButton = (Button) findViewById(R.id.playbutton);
         playButton.setOnClickListener(mediaControls.playButtonListener());
-        mediaControls.preparePlayButton(playButton);
+        //mediaControls.preparePlayButton(playButton);
+        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
+        MediaControls.addPlayButton(playButton);
         Button prevButton = (Button) findViewById(R.id.prevbutton);
         prevButton.setOnClickListener(mediaControls.prevButtonListener());
         Button nextButton = (Button) findViewById(R.id.nextbutton);
@@ -56,7 +58,8 @@ public class VolumeActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         Button playButton = (Button) findViewById(R.id.playbutton);
-        mediaControls.preparePlayButton(playButton);
+        //mediaControls.preparePlayButton(playButton);
+        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
     }
 
 

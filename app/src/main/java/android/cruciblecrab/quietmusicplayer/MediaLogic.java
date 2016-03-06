@@ -29,7 +29,6 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     public static float VOLUME_STEP = 0.01f;
     public static float MAX_VOLUME = 0.999f;
     public static float DEFAULT_VOLUME = VOLUME_STEP * 30;
-    private static float NO_SET_VOLUME = -88.0f;
     private static final String ACTION_PLAY = "crucibleCrab.qmp.PLAY";
 
     private float volume;
@@ -44,11 +43,6 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     public static boolean hasPermissions;
 
     @Override
-    public void onCreate(){
-
-    }
-
-    @Override
     public void onDestroy(){
         if(mediaPlayer!=null){
             mediaPlayer.stop();
@@ -58,7 +52,6 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         Bundle b = new Bundle();
         b.putFloat(SongInfoManager.KEY_VOLUME, volume);
         SongInfoManager.storeMiscData(b, this);
-
         SongInfoManager.storeSongList(songs, songIndex, this);
         Log.d("XXX_DESTORYED","XXXXXXXXXXXX");
     }
@@ -101,7 +94,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     public void onPrepared(MediaPlayer player) {
         if(musicWanted) {
             player.start();
-            MediaControls.playerPlaying = true;
+            MediaControls.setAllPlayButtons(true);
         }
     }
 
@@ -120,14 +113,11 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     private void setAsForegroundService(){
 
         Intent notificationIntent = new Intent(getBaseContext(), VolumeActivity.class);
-
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setAutoCancel(false);
         builder.setTicker("QMP: Song playing");
@@ -148,7 +138,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     }
 
     public void onAudioFocusChange(int focusChange) {
-        Log.d("XXX_M.L. AudioFoc","CALLED");
+        Log.d("XXX_M.L. AudioFoc", "CALLED");
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
                 // resume playback
@@ -249,6 +239,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
         public void pauseSong(){
@@ -259,14 +250,6 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.start();
             setAsForegroundService();
             requestAudioFocus();
-        }
-
-        public void playCurrentSong(){
-            try {
-                playSong(songs.get(songIndex).id);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
     }

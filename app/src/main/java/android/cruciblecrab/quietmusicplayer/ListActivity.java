@@ -53,8 +53,15 @@ public class ListActivity extends AppCompatActivity {
                     switch(mode){
                         case KEY_SONGS:
                             try {
-                                songClickListener(selected);
-                                setSongList(myItemInt);
+                                if(binder != null){
+                                    binder.setMusicWanted(true);
+                                    Button playButton = (Button) findViewById(R.id.playbutton);
+                                    //mediaControls.setButtonToUnpause(playButton);
+                                    MediaControls.setAllPlayButtons(true);
+                                    MediaControls.playerPlaying = true;
+                                    setSongList(myItemInt);
+                                    binder.startPlaying();
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -96,7 +103,9 @@ public class ListActivity extends AppCompatActivity {
 
         Button playButton = (Button) findViewById(R.id.playbutton);
         playButton.setOnClickListener(mediaControls.playButtonListener());
-        mediaControls.preparePlayButton(playButton);
+        //mediaControls.preparePlayButton(playButton);
+        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
+        MediaControls.addPlayButton(playButton);
         Button prevButton = (Button) findViewById(R.id.prevbutton);
         prevButton.setOnClickListener(mediaControls.prevButtonListener());
         Button nextButton = (Button) findViewById(R.id.nextbutton);
@@ -110,22 +119,8 @@ public class ListActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         Button playButton = (Button) findViewById(R.id.playbutton);
-        mediaControls.preparePlayButton(playButton);
-    }
-
-    private void songClickListener(CursorWrapper selected) throws IOException{
-        String text = selected.getString(2);
-        int id = selected.getInt(0);
-        if(binder != null){
-            Log.d("LIST_ACTIVITY", "Playing a song " + id);
-            binder.setMusicWanted(true);
-            Button playButton = (Button) findViewById(R.id.playbutton);
-            mediaControls.setButtonToUnpause(playButton);
-        }else{
-            Log.d("LIST_ACTIVITY", "No binder on click " + id);
-        }
-        Toast toast=Toast.makeText(getApplicationContext(), text/*+" "+myItemInt*/, Toast.LENGTH_SHORT);
-        toast.show();
+        //mediaControls.preparePlayButton(playButton);
+        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
     }
 
     private void albumClickListener(CursorWrapper selected){
@@ -147,21 +142,23 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void setSongList(int startPoint) throws IOException{
+        ArrayList<Song> songs = createSongList();
+        binder.setSongList(songs, startPoint);
+    }
+
+    private ArrayList<Song> createSongList(){
         int length = list.getAdapter().getCount();
         ArrayList<Song> songs = new ArrayList<Song>();
         for(int i = 0; i < length; i++){
             CursorWrapper item = (CursorWrapper)list.getItemAtPosition(i);
             songs.add( new Song(item.getString(2), item.getInt(0)));
         }
-        binder.setSongList(songs, startPoint);
-        binder.startPlaying();
+        return songs;
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //super.onCreateOptionsMenu(menu);
         if(mode==KEY_SONGS) {
             getMenuInflater().inflate(R.menu.list_shuffle, menu);
         }
@@ -173,11 +170,7 @@ public class ListActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.action_shuffle:
                 int length = list.getAdapter().getCount();
-                ArrayList<Song> songs = new ArrayList<Song>();
-                for(int i = 0; i < length; i++){
-                    CursorWrapper item = (CursorWrapper)list.getItemAtPosition(i);
-                    songs.add( new Song(item.getString(2), item.getInt(0)));
-                }
+                ArrayList<Song> songs = createSongList();
                 Random random = new Random();
                 for(int i = 0; i < length; i++){
                     int j = Math.abs(random.nextInt()%length);
@@ -187,6 +180,8 @@ public class ListActivity extends AppCompatActivity {
                 }
                 binder.setSongList(songs, 0);
                 binder.setMusicWanted(true);
+                MediaControls.setAllPlayButtons(true);
+                MediaControls.playerPlaying = true;
                 try {
                     binder.startPlaying();
                 } catch (IOException e) {
