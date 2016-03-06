@@ -8,7 +8,10 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ListActivity extends AppCompatActivity {
     public static final String TYPE_KEY = "typeKey1001";
@@ -102,6 +106,9 @@ public class ListActivity extends AppCompatActivity {
         prevButton.setOnClickListener(mediaControls.prevButtonListener());
         Button nextButton = (Button) findViewById(R.id.nextbutton);
         nextButton.setOnClickListener(mediaControls.nextButtonListener());
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
     }
 
     @Override
@@ -115,8 +122,8 @@ public class ListActivity extends AppCompatActivity {
         String text = selected.getString(2);
         int id = selected.getInt(0);
         if(binder != null){
-            Log.d("LIST_ACTIVITY", "Playing a song "+id);
-            binder.playSong(id);
+            Log.d("LIST_ACTIVITY", "Playing a song " + id);
+            //binder.playSong(id);
             Button playButton = (Button) findViewById(R.id.playbutton);
             mediaControls.setButtonToUnpause(playButton);
         }else{
@@ -153,6 +160,53 @@ public class ListActivity extends AppCompatActivity {
         }
         binder.setSongList(songs, startPoint);
         binder.startPlaying();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        //super.onCreateOptionsMenu(menu);
+        if(mode==KEY_SONGS) {
+            getMenuInflater().inflate(R.menu.list_shuffle, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_shuffle:
+                int length = list.getAdapter().getCount();
+                ArrayList<Song> songs = new ArrayList<Song>();
+                for(int i = 0; i < length; i++){
+                    CursorWrapper item = (CursorWrapper)list.getItemAtPosition(i);
+                    songs.add( new Song(item.getString(2), item.getInt(0)));
+                }
+
+
+                Random random = new Random();
+                for(int i = 0; i < length; i++){
+                    int j = Math.abs(random.nextInt()%length);
+                    Song temp = songs.get(i);
+                    songs.set(i, songs.get(j));
+                    songs.set(j, temp);
+                }
+
+
+                binder.setSongList(songs, 0);
+                try {
+                    binder.startPlaying();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(menuItem);
+
+        }
     }
 
 }
