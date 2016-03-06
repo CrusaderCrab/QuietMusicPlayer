@@ -1,9 +1,11 @@
 package android.cruciblecrab.quietmusicplayer;
 
+import java.io.Serializable;
+
 /**
  * Created by CrusaderCrab on 28/02/2016.
  */
-public class Song {
+public class Song implements Serializable{
 
     public String title;
     public int id;

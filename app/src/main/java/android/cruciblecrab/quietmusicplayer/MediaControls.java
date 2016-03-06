@@ -46,15 +46,22 @@ public class MediaControls {
             public void onClick(View view){
                 MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
                 if (binder != null) {
-                    if (binder.getMediaPlayer() != null && binder.playerReady()) {
+                    if (binder.getMediaPlayer() != null) {
+                        binder.setMusicWanted(true);
                         Button button = (Button) view;
-                        if (playerPlaying) {
-                            button.setText("Play");
-                            binder.pauseSong();
-                            playerPlaying = false;
-                        } else {
+                        if(binder.playerReady() && binder.songsReady()) {
+                            if (playerPlaying) {
+                                button.setText("Play");
+                                binder.pauseSong();
+                                playerPlaying = false;
+                            } else {
+                                button.setText("Pause");
+                                binder.unpauseSong();
+                                playerPlaying = true;
+                            }
+                        }else if(binder.songsReady() && !binder.playerReady() && !playerPlaying){
+                            binder.playCurrentSong();
                             button.setText("Pause");
-                            binder.unpauseSong();
                             playerPlaying = true;
                         }
                     }

@@ -38,14 +38,14 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     private int songIndex;
     private LocalBinder binder = null;
     private boolean playerReady = false;
+    private boolean songsReady = false;
+    private boolean musicWanted = false;
 
     public static boolean hasPermissions;
 
     @Override
     public void onCreate(){
-        Bundle miscValues = SongInfoManager.retrieveMiscData(this);
-        float savedVolume = miscValues.getFloat(SongInfoManager.KEY_VOLUME, NO_SET_VOLUME);
-        volume = savedVolume;
+
     }
 
     @Override
@@ -58,27 +58,40 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         Bundle b = new Bundle();
         b.putFloat(SongInfoManager.KEY_VOLUME, volume);
         SongInfoManager.storeMiscData(b, this);
+
+        SongInfoManager.storeSongList(songs, songIndex, this);
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("XXX_M.L._START_COM", "started");
+        if(binder==null){
+            binder = new LocalBinder();
+            MediaLogicConnection.BINDER = binder;
+        }
         if(mediaPlayer==null){
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK); //allowed to play even when phone is "sleeping"
-            volume = (volume==NO_SET_VOLUME?DEFAULT_VOLUME:volume);
-        }
-        if(binder==null){
-            binder = new LocalBinder();
-            MediaLogicConnection.BINDER = binder;
-        }
-        if(intent != null){
-            //might have use later
-        }else{
 
+            Bundle miscValues = SongInfoManager.retrieveMiscData(this);
+            float savedVolume = miscValues.getFloat(SongInfoManager.KEY_VOLUME, DEFAULT_VOLUME);
+            volume = savedVolume;
+
+            SongInfoManager.SongList sl = SongInfoManager.getStoredSongList(this);
+            if(sl!= null && sl.songs!=null){
+                Log.d("XXX_M.L. songList", "Correctly Opened");
+                songs = sl.songs;
+                songIndex = sl.index;
+                songsReady = true;
+            }else{
+                if(sl!=null)
+                    Log.d("XXX_M.L. songList", "sl not null: "+sl.songs);
+                else if(sl==null)
+                    Log.d("XXX_M.L. songList", "sl is null: "+sl);
+            }
         }
         return START_STICKY;
     }
@@ -91,7 +104,10 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
     /** Called when MediaPlayer is ready */
     public void onPrepared(MediaPlayer player) {
-        player.start();
+        if(musicWanted) {
+            player.start();
+            MediaControls.playerPlaying = true;
+        }
     }
 
     @Override
@@ -190,7 +206,6 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.reset();
             mediaPlayer.setDataSource(getApplicationContext(), contentUri);
             playerReady = true;
-            MediaControls.playerPlaying = true;
             setMediaVolume();
             setAsForegroundService();
             requestAudioFocus();
@@ -220,9 +235,10 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             playSong(songs.get(songIndex).id);
         }
 
-        public boolean playerReady(){
-            return playerReady;
-        }
+        public boolean playerReady(){return playerReady;}
+        public boolean songsReady(){return songsReady; }
+        public boolean musicWanted(){return musicWanted; }
+        public void setMusicWanted(boolean val){ musicWanted = val;}
 
         public void playNextSong(){
             onCompletion(mediaPlayer);
@@ -246,6 +262,14 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.start();
             setAsForegroundService();
             requestAudioFocus();
+        }
+
+        public void playCurrentSong(){
+            try {
+                playSong(songs.get(songIndex).id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

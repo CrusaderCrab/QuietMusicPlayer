@@ -5,6 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +17,7 @@ import java.util.ArrayList;
  */
 public class SongInfoManager {
     private static final String PREFS_NAME = "qmpCrusaderCrabPrefFile";
-    private static String songListFileName = "songList.txt";
+    private static final String SONG_LIST_SER_FILE = "qmpCrusaderCrabSongList.ser";
 
     public static final String KEY_VOLUME = "qmp.crusadercrab.sim.key.volume";
 
@@ -34,17 +39,41 @@ public class SongInfoManager {
         editor.commit();
     }
 
-    public static SongList getStoredSongList(){
-        return null;
+    public static SongList getStoredSongList( Context c){
+        SongList sl = null;
+        try {
+            FileInputStream fis = c.openFileInput(SONG_LIST_SER_FILE);
+            ObjectInputStream in = new ObjectInputStream(fis);
+            sl = (SongList) in.readObject();
+            in.close();
+            fis.close();
+        } catch (Exception e) {
+            return null;
+        }
+        return sl;
     }
 
-    public static void storedSongList(SongList sl){
-
+    public static void storeSongList(ArrayList<Song> songs, int position, Context c){
+        SongList sl = new SongList(songs, position);
+        try {
+            FileOutputStream fos = c.openFileOutput(SONG_LIST_SER_FILE, Context.MODE_PRIVATE);
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            out.writeObject(sl);
+            out.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public class SongList{
+    public static class SongList  implements java.io.Serializable{
         public ArrayList<Song>songs;
         public int index;
+
+        public SongList(ArrayList<Song> songs, int position){
+            this.songs = songs;
+            index = position;
+        }
     }
 }
 
