@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -54,6 +56,15 @@ public class VolumeActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
+        VolumeController.init(this, volumeText);
+
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        //VolumeController.removeMenuItem();
+        VolumeController.saveVolumes(this);
     }
 
     @Override
@@ -64,6 +75,28 @@ public class VolumeActivity extends AppCompatActivity {
         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
         MediaControls.setToSongName((TextView)findViewById(R.id.songtext));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.volume_volume, menu);
+        MenuItem mi = menu.findItem(R.id.action_save_volumes);
+        VolumeController.addMenuItem(mi);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_save_volumes:
+                VolumeController.menuItemClicked();
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(menuItem);
+
+        }
+    }
+
 
 
     public void songButtonClick(View view) {

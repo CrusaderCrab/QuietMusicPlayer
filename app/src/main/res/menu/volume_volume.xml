@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/action_shuffle"
-        android:title="Shuffle"
-        app:showAsAction="ifRoom"/>
-
     <item android:id="@+id/action_save_volumes"
         android:title="Do load Volumes"
         app:showAsAction="never"/>

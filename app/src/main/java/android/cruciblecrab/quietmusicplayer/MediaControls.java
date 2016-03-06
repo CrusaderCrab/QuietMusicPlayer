@@ -118,8 +118,9 @@ public class MediaControls {
 
     public static void setAllPlayButtons(boolean playing){
         String text = (playing?"pause":"play");
-        for(Button pb : playButtons)
+        for(Button pb : playButtons) {
             pb.setText(text);
+        }
     }
 
     public static void addPlayButton(Button pb){

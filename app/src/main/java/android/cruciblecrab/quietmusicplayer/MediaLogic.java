@@ -53,7 +53,8 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         b.putFloat(SongInfoManager.KEY_VOLUME, volume);
         SongInfoManager.storeMiscData(b, this);
         SongInfoManager.storeSongList(songs, songIndex, this);
-        Log.d("XXX_DESTORYED","XXXXXXXXXXXX");
+        Log.d("XXX_DESTORYED", "XXXXXXXXXXXX");
+        VolumeController.saveVolumes(this);
     }
 
 
@@ -100,6 +101,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        VolumeController.setVolumeForSong(songs.get(songIndex), volume);
         songIndex = (songIndex+1)%songs.size();
         try {
             binder.playSong(songs.get(songIndex).id);
@@ -195,6 +197,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             setMediaVolume();
             setAsForegroundService();
             requestAudioFocus();
+            VolumeController.newSongStarting(songs.get(songIndex), binder);
             mediaPlayer.prepareAsync();
         }
 
@@ -232,6 +235,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         }
 
         public void playPreviousSong(){
+            VolumeController.setVolumeForSong(songs.get(songIndex), volume);
             songIndex--;
             songIndex = (songIndex<0?songs.size()-1:songIndex);
             try {

@@ -73,7 +73,8 @@
         android:gravity="center"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:id="@+id/volumeLayout">
 
         <Button
             android:layout_width="wrap_content"
@@ -101,8 +102,11 @@
 
     </LinearLayout>
 
+
+
     <include layout="@layout/layout_music_control"
         android:id="@+id/include"/>
+
 
 
 

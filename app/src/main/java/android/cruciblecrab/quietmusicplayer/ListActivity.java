@@ -163,7 +163,12 @@ public class ListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(mode==KEY_SONGS) {
             getMenuInflater().inflate(R.menu.list_shuffle, menu);
+        }else{
+            getMenuInflater().inflate(R.menu.volume_volume, menu);
         }
+
+        MenuItem mi = menu.findItem(R.id.action_save_volumes);
+        VolumeController.addMenuItem(mi);
         return true;
     }
 
@@ -189,6 +194,9 @@ public class ListActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                return true;
+            case R.id.action_save_volumes:
+                VolumeController.menuItemClicked();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
