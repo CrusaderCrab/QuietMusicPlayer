@@ -32,13 +32,10 @@ public class VolumeActivity extends AppCompatActivity {
         MediaLogicConnection connection = new MediaLogicConnection();
         Intent serviceIntent = new Intent(this, MediaLogic.class);
         startService(serviceIntent);
-        //boolean res = bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
         binder = MediaLogicConnection.getBinder();
-        //Log.d("XXX_V.A_create", "res= " + res + " binder= " + binder + " BINDER= " + connection.BINDER);
 
         mediaControls = new MediaControls();
         handler = new android.os.Handler();
-        //Make sure you update Seekbar on UI thread
         VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
         seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
 
@@ -100,6 +97,6 @@ public class VolumeActivity extends AppCompatActivity {
 
     private void setVolumeText(float vol) {
         int v = (int) (Math.round(vol * 100));
-        volumeText.setText(v + " : " + vol);
+        volumeText.setText(v);
     }
 }

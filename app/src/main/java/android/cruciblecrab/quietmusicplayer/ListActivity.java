@@ -1,11 +1,8 @@
 package android.cruciblecrab.quietmusicplayer;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.CursorWrapper;
-import android.media.MediaPlayer;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -95,7 +91,6 @@ public class ListActivity extends AppCompatActivity {
         mediaControls = new MediaControls();
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         handler = new android.os.Handler();
-        //Make sure you update Seekbar on UI thread
         ListActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
         seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
 
@@ -183,8 +178,6 @@ public class ListActivity extends AppCompatActivity {
                     CursorWrapper item = (CursorWrapper)list.getItemAtPosition(i);
                     songs.add( new Song(item.getString(2), item.getInt(0)));
                 }
-
-
                 Random random = new Random();
                 for(int i = 0; i < length; i++){
                     int j = Math.abs(random.nextInt()%length);
@@ -192,8 +185,6 @@ public class ListActivity extends AppCompatActivity {
                     songs.set(i, songs.get(j));
                     songs.set(j, temp);
                 }
-
-
                 binder.setSongList(songs, 0);
                 try {
                     binder.startPlaying();

@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -54,6 +55,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK); //allowed to play even when phone is "sleeping"
             volume = VOLUME_STEP*30;
         }
         if(binder==null){
