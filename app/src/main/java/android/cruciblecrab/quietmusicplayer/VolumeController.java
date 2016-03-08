@@ -30,7 +30,7 @@ public class VolumeController {
     private static TextView volumeText;
     private static boolean initialized = false;
     private static boolean doLoadVolumes = false;
-    private static final String VOLUME_SER_FILE = "qmpCrusaderCrabVolumes.ser";
+    private static final String VOLUME_JSON_FILE = "qmpCrusaderCrabVolumes.json";
 
     public static void init(Context c, TextView text){
         if(!initialized) {
@@ -42,13 +42,7 @@ public class VolumeController {
 
     public static void saveVolumes(Context c){
         try {
-            FileOutputStream fos = c.openFileOutput(VOLUME_SER_FILE, Context.MODE_PRIVATE);
-            /*ObjectOutputStream out = new ObjectOutputStream(fos);
-            out.writeObject(volumes);
-            out.close();
-            fos.close();*/
-
-
+            FileOutputStream fos = c.openFileOutput(VOLUME_JSON_FILE, Context.MODE_PRIVATE);
             JSONObject js = new JSONObject(volumes);
             fos.write(js.toString().getBytes());
 
@@ -64,15 +58,7 @@ public class VolumeController {
     private static void loadVolumes(Context c){
         try {
 
-            FileInputStream fis = c.openFileInput(VOLUME_SER_FILE);
-            /*ObjectInputStream in = new ObjectInputStream(fis);
-            //volumes = (ArrayMap<String, Float>)in.readObject();
-            volumes = (TreeMap<String, Double>) in.readObject();
-            in.close();
-            fis.close();*/
-
-
-
+            FileInputStream fis = c.openFileInput(VOLUME_JSON_FILE);
             StringBuffer fileContent = new StringBuffer("");
             byte[] buffer = new byte[1024];
             int n;

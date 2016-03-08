@@ -54,7 +54,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         SongInfoManager.storeMiscData(b, this);
         SongInfoManager.storeSongList(songs, songIndex, this);
         Log.d("XXX_DESTORYED", "XXXXXXXXXXXX");
-        VolumeController.saveVolumes(this);
+        super.onDestroy();
     }
 
 
@@ -79,10 +79,13 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
                 songs = sl.songs;
                 songIndex = sl.index;
                 songsReady = true;
+                Log.d("XXX_M.L.create","SIM LOADED SOMETHING CORRECTLY");
+            }else{
+                Log.d("XXX_M.L.create","Some SIM is null");
             }
         }
         Log.d("XXX_M.L_START_COM","Player is: "+mediaPlayer);
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Nullable

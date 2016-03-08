@@ -63,8 +63,11 @@ public class VolumeActivity extends AppCompatActivity {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        Log.d("XXX_VA", "DEAD_DEAD");
         //VolumeController.removeMenuItem();
         VolumeController.saveVolumes(this);
+
+        stopService(new Intent(this, MediaLogic.class));
     }
 
     @Override

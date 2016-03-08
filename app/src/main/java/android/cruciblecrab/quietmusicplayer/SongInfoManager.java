@@ -3,6 +3,7 @@ package android.cruciblecrab.quietmusicplayer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +49,7 @@ public class SongInfoManager {
             in.close();
             fis.close();
         } catch (Exception e) {
+            Log.d("XXX_S.I.M.load", "load FAILED");
             return null;
         }
         return sl;
@@ -62,6 +64,7 @@ public class SongInfoManager {
             out.close();
             fos.close();
         } catch (Exception e) {
+            Log.d("XXX_S.I.M.STORE", "STORE FAILED");
             e.printStackTrace();
         }
     }
