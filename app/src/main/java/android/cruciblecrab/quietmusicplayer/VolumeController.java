@@ -44,9 +44,8 @@ public class VolumeController {
         try {
             FileOutputStream fos = c.openFileOutput(VOLUME_JSON_FILE, Context.MODE_PRIVATE);
             JSONObject js = new JSONObject(volumes);
+            Log.v("XXX_JSON",js.toString());
             fos.write(js.toString().getBytes());
-
-
             fos.close();
             Log.d("XXX_VC_save", "SAVE_GOOD");
         } catch (Exception e) {
@@ -69,70 +68,30 @@ public class VolumeController {
             JSONObject js = new JSONObject(new String(buffer));
             volumes = jsonToMap(js);
             fis.close();
-
-
             Log.d("XXX_VC_load", "LOAD_GOOD");
         } catch (Exception e) {
-            //volumes = new ArrayMap<String, Float>();
             volumes = new TreeMap<String, Float>();
             e.printStackTrace();
             Log.d("XXX_VC_load", "LOAD_BAD");
         }
     }
 
-
-
-
-
     public static TreeMap<String, Float> jsonToMap(JSONObject json) throws JSONException {
         TreeMap<String, Float> retMap = new TreeMap<String, Float>();
+        Iterator<String> keysItr = json.keys();
+        while(keysItr.hasNext()){
+            String key = keysItr.next();
+            double value = 0;
+            try {
+                value = json.getDouble(key);
+            }catch(JSONException noValidValue){
 
-        if(json != JSONObject.NULL) {
-            retMap = toMap(json);
+            }
+            float floatValue = new Double(value).floatValue();
+            retMap.put(key, floatValue);
         }
         return retMap;
     }
-
-    public static TreeMap<String, Float> toMap(JSONObject object) throws JSONException {
-        TreeMap<String, Float> map = new TreeMap<String, Float>();
-
-        Iterator<String> keysItr = object.keys();
-        while(keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-
-            if(value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            }
-
-            else if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            Double d=  (Double)value;
-            Float f = d.floatValue();
-            map.put(key, f);
-        }
-        return map;
-    }
-
-    public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
-            if(value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            }
-
-            else if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            list.add(value);
-        }
-        return list;
-    }
-
-
-
 
     public static void setLoadVolumes(boolean val){
         doLoadVolumes = val;
@@ -173,10 +132,6 @@ public class VolumeController {
         Log.d("XXX_VC_newSongStart", "START");
         if(doLoadVolumes && binder!=null){
             Float vol = volumes.get(song.title);
-            //Double volD = volumes.get(song.title);
-            //Float vol = null;
-            //if(volD!=null)
-             //   vol = volD.floatValue();
             if(vol!=null) {
                 binder.setVolume(vol);
                 volumeText.setText(vol + "");
