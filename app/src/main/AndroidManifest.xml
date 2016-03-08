@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ListActivity"></activity>
-        <service android:name=".MediaLogic" android:exported="true" />
+        <service android:name=".MediaLogic" android:exported="true"/>
 
         <receiver android:name=".MusicIntentReceiver">
             <intent-filter>

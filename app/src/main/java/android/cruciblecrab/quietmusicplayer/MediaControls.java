@@ -2,6 +2,7 @@ package android.cruciblecrab.quietmusicplayer;
 
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -54,8 +55,9 @@ public class MediaControls {
 
             public void onClick(View view){
                 MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
+                Log.d("XXXX", "binder: " + binder);
                 if (binder != null) {
-                    if (binder.getMediaPlayer() != null) {
+                    if (binder.getMediaPlayer() != null) {Log.d("XXXX", "media: " + binder.getMediaPlayer());
                         binder.setMusicWanted(true);
                         Button button = (Button) view;
                         if(binder.playerReady() && binder.songsReady()) {

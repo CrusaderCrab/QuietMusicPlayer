@@ -40,6 +40,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     private boolean songsReady = false;
     private boolean musicWanted = false;
 
+    public static boolean serviceStarted = false;
     public static boolean hasPermissions;
 
     @Override
@@ -48,24 +49,25 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+
+            Bundle b = new Bundle();
+            b.putFloat(SongInfoManager.KEY_VOLUME, volume);
+            SongInfoManager.storeMiscData(b, this);
+            SongInfoManager.storeSongList(songs, songIndex, this);
+            Log.d("XXX_M.L.Destoryed", "Service Destroyed inside if");
+            super.onDestroy();
         }
-        Bundle b = new Bundle();
-        b.putFloat(SongInfoManager.KEY_VOLUME, volume);
-        SongInfoManager.storeMiscData(b, this);
-        SongInfoManager.storeSongList(songs, songIndex, this);
-        Log.d("XXX_DESTORYED", "XXXXXXXXXXXX");
-        super.onDestroy();
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("XXX_M.L._START_COM", "started");
-        if(binder==null){
-            binder = new LocalBinder();
-            MediaLogicConnection.BINDER = binder;
-        }
+        binder = new LocalBinder();
+        MediaLogicConnection.BINDER = binder;
+
         if(mediaPlayer==null){
+            serviceStarted = true;
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnCompletionListener(this);
@@ -86,6 +88,12 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         }
         Log.d("XXX_M.L_START_COM","Player is: "+mediaPlayer);
         return START_NOT_STICKY;
+    }
+
+
+    @Override
+    public void onTaskRemoved (Intent rootIntent){
+        stopSelf();
     }
 
     @Nullable

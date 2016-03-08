@@ -30,12 +30,10 @@ public class VolumeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_volume);
         volumeText = (TextView)findViewById(R.id.volumetext);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
-
         MediaLogicConnection connection = new MediaLogicConnection();
         Intent serviceIntent = new Intent(this, MediaLogic.class);
         startService(serviceIntent);
         binder = MediaLogicConnection.getBinder();
-
         mediaControls = new MediaControls();
         handler = new android.os.Handler();
         VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
@@ -66,8 +64,6 @@ public class VolumeActivity extends AppCompatActivity {
         Log.d("XXX_VA", "DEAD_DEAD");
         //VolumeController.removeMenuItem();
         VolumeController.saveVolumes(this);
-
-        stopService(new Intent(this, MediaLogic.class));
     }
 
     @Override
