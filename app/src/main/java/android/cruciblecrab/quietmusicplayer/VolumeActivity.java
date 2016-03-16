@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import java.util.logging.Handler;
 
-public class VolumeActivity extends AppCompatActivity {
+public class VolumeActivity extends MediaControlsActivity {
 
     TextView volumeText;
     SeekBar seekBar;
@@ -32,7 +32,8 @@ public class VolumeActivity extends AppCompatActivity {
         startService(serviceIntent);
 
         volumeText = (TextView)findViewById(R.id.volumetext);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        setupMediaControls();
+        /*seekBar = (SeekBar) findViewById(R.id.seekBar);
         mediaControls = new MediaControls();
         handler = new android.os.Handler();
         VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
@@ -49,11 +50,18 @@ public class VolumeActivity extends AppCompatActivity {
         prevButton.setOnClickListener(mediaControls.prevButtonListener());
         Button nextButton = (Button) findViewById(R.id.nextbutton);
         nextButton.setOnClickListener(mediaControls.nextButtonListener());
-
+        */
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
         VolumeController.init(this, volumeText);
+        if(!MediaLogic.ready()) {
+            Bundle miscValues = SongInfoManager.retrieveMiscData(this);
+            float savedVolume = miscValues.getFloat(SongInfoManager.KEY_VOLUME, MediaLogic.DEFAULT_VOLUME);
+            setVolumeText(savedVolume);
+        }else{
+            setVolumeText(MediaLogic.getInterface().getVolume());
+        }
     }
 
     @Override
@@ -61,12 +69,14 @@ public class VolumeActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d("XXX_VA", "DEAD_DEAD");
         //VolumeController.removeMenuItem();
+        removeMediaControls();
         VolumeController.saveVolumes(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        setVolumeButtonText();
         Button playButton = (Button) findViewById(R.id.playbutton);
         //mediaControls.preparePlayButton(playButton);
         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
@@ -137,5 +147,12 @@ public class VolumeActivity extends AppCompatActivity {
     private void setVolumeText(float vol) {
         int v = (int) (Math.round(vol * 100));
         volumeText.setText(v+"");
+    }
+
+    private void setVolumeButtonText(){
+        if(MediaLogic.ready()){
+            float vol = MediaLogic.getInterface().getVolume();
+            setVolumeText(vol);
+        }
     }
 }

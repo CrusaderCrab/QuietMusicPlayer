@@ -145,9 +145,9 @@ public class MediaControls {
             MediaLogic.LocalBinder b = MediaLogic.getInterface();
             if (b.getCurrentSong() != null) {
                 String song = b.getCurrentSong().title;
-                if (song.length() > MAX_TITLE_LENGTH) {
-                    song = song.substring(0, MAX_TITLE_LENGTH);
-                }
+               // if (song.length() > MAX_TITLE_LENGTH) {
+               //     song = song.substring(0, MAX_TITLE_LENGTH);
+               // }
                 t.setText(song);
             }
         }

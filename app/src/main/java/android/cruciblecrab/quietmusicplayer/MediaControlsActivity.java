@@ -11,6 +11,7 @@ import android.widget.TextView;
  */
 public abstract class MediaControlsActivity extends AppCompatActivity{
 
+    android.os.Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -20,8 +21,9 @@ public abstract class MediaControlsActivity extends AppCompatActivity{
         MediaControls mediaControls = new MediaControls();
         //seekbar
         SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-        android.os.Handler handler = new android.os.Handler();
+        handler = new android.os.Handler();
         this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
+        seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
         //current time
         TextView durationText = (TextView)findViewById(R.id.timetext);
         this.runOnUiThread(new DurationRunnable(handler, durationText));
@@ -54,7 +56,16 @@ public abstract class MediaControlsActivity extends AppCompatActivity{
         MediaControls.removePlayButton(playButton);
         //next button, no need
         //prev button, no need
+    }
 
+    protected void increaseVolume(){
+        if(MediaLogic.ready())
+            MediaLogic.getInterface().alterVolume(MediaLogic.VOLUME_STEP);
+    }
+
+    protected void decreaseVolume(){
+        if(MediaLogic.ready())
+            MediaLogic.getInterface().alterVolume(-MediaLogic.VOLUME_STEP);
     }
 
 }

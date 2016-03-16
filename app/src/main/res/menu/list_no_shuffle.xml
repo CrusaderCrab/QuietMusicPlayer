@@ -6,20 +6,14 @@
     <item android:id="@+id/volume_down_menu"
         android:title="Volume Down"
         android:icon="@drawable/ic_volume_down_black_24dp"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         />
 
     <item android:id="@+id/volume_up_menu"
         android:title="Volume Up"
         android:icon="@drawable/ic_volume_up_black_24dp"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         />
-
-    <item android:id="@+id/action_shuffle"
-        android:title="Shuffle"
-        android:icon="@drawable/ic_shuffle_black_24dp"
-        app:showAsAction="always"/>
-
 
     <item android:id="@+id/action_save_volumes"
         android:title="Do load Volumes"

@@ -110,6 +110,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
         if(musicWanted) {
             player.start();
             MediaControls.setAllPlayButtons(true);
+            MediaControls.setAllSongNames();
         }
     }
 
