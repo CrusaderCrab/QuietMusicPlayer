@@ -21,6 +21,8 @@ public class MediaControls {
 
     public static boolean playerPlaying = false;
     private static ArrayList<Button> playButtons = new ArrayList<Button>();
+    //private static ArrayList<Button> prevButtons = new ArrayList<Button>();
+    //private static ArrayList<Button> nextButtons = new ArrayList<Button>();
     private static ArrayList<TextView> songNames = new ArrayList<TextView>();
     private static int MAX_TITLE_LENGTH = 20;
 
@@ -127,6 +129,16 @@ public class MediaControls {
     public static void addPlayButton(Button pb){
         playButtons.add(pb);
     }
+    public static void removePlayButton(Button pb){
+        playButtons.remove(pb);
+    }
+
+    public static void addSongName(TextView t){
+        songNames.add(t);
+    }
+    public static void removeSongName(TextView t){
+        songNames.remove(t);
+    }
 
     public static void setToSongName(TextView t){
         if(MediaLogic.ready()) {
@@ -139,6 +151,11 @@ public class MediaControls {
                 t.setText(song);
             }
         }
+    }
+
+    public static void setAllSongNames(){
+        for(TextView t : songNames)
+            setToSongName(t);
     }
 
 }
