@@ -31,7 +31,6 @@ public class ListActivity extends AppCompatActivity {
     public static final int KEY_ARTISTS = MediaSearcher.MODE_ARTIST;
     ListView list;
     MediaSearcher searcher;
-    MediaLogic.LocalBinder binder;
     MediaControls mediaControls;
     private int mode;
     private String filter;
@@ -54,18 +53,21 @@ public class ListActivity extends AppCompatActivity {
                     switch(mode){
                         case KEY_SONGS:
                             try {
-                                if(binder != null){
-                                    binder.setMusicWanted(true);
-                                    Button playButton = (Button) findViewById(R.id.playbutton);
-                                    //mediaControls.setButtonToUnpause(playButton);
-                                    MediaControls.setAllPlayButtons(true);
-                                    MediaControls.playerPlaying = true;
-                                    setSongList(myItemInt);
-                                    binder.startPlaying();
+                                if (MediaLogic.ready()) {
+                                    MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+                                    if (binder != null) {
+                                        binder.setMusicWanted(true);
+                                        Button playButton = (Button) findViewById(R.id.playbutton);
+                                        //mediaControls.setButtonToUnpause(playButton);
+                                        MediaControls.setAllPlayButtons(true);
+                                        MediaControls.playerPlaying = true;
+                                        setSongList(myItemInt);
+                                        binder.startPlaying();
+                                    }
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                                }catch(IOException e){
+                                    e.printStackTrace();
+                                }
                             break;
                         case KEY_ALBUMS:
                             albumClickListener(selected); break;
@@ -76,8 +78,6 @@ public class ListActivity extends AppCompatActivity {
                     }
                 }
         });
-
-        binder = MediaLogicConnection.getBinder();
         if(mode == KEY_SONGS){
             if(searcher==null){
                 searcher = new MediaSearcher(this, list, MediaSearcher.MODE_SONG, filter, filterMode);
@@ -145,7 +145,8 @@ public class ListActivity extends AppCompatActivity {
 
     private void setSongList(int startPoint) throws IOException{
         ArrayList<Song> songs = createSongList();
-        binder.setSongList(songs, startPoint);
+        if(MediaLogic.ready())
+            MediaLogic.getInterface().setSongList(songs, startPoint);
     }
 
     private ArrayList<Song> createSongList(){
@@ -176,25 +177,28 @@ public class ListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_shuffle:
-                int length = list.getAdapter().getCount();
-                ArrayList<Song> songs = createSongList();
-                Random random = new Random();
-                for(int i = 0; i < length; i++){
-                    int j = Math.abs(random.nextInt()%length);
-                    Song temp = songs.get(i);
-                    songs.set(i, songs.get(j));
-                    songs.set(j, temp);
+                if(MediaLogic.ready()) {
+                    MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+                    int length = list.getAdapter().getCount();
+                    ArrayList<Song> songs = createSongList();
+                    Random random = new Random();
+                    for (int i = 0; i < length; i++) {
+                        int j = Math.abs(random.nextInt() % length);
+                        Song temp = songs.get(i);
+                        songs.set(i, songs.get(j));
+                        songs.set(j, temp);
+                    }
+                    binder.setSongList(songs, 0);
+                    binder.setMusicWanted(true);
+                    MediaControls.setAllPlayButtons(true);
+                    MediaControls.playerPlaying = true;
+                    try {
+                        binder.startPlaying();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
                 }
-                binder.setSongList(songs, 0);
-                binder.setMusicWanted(true);
-                MediaControls.setAllPlayButtons(true);
-                MediaControls.playerPlaying = true;
-                try {
-                    binder.startPlaying();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return true;
             case R.id.action_save_volumes:
                 VolumeController.menuItemClicked();
                 return true;

@@ -35,7 +35,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     private MediaPlayer mediaPlayer = null;
     private ArrayList<Song> songs;
     private int songIndex;
-    private LocalBinder binder = null;
+    private static LocalBinder binder = null;
     private boolean playerReady = false;
     private boolean songsReady = false;
     private boolean musicWanted = false;
@@ -64,7 +64,6 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("XXX_M.L._START_COM", "started");
         binder = new LocalBinder();
-        MediaLogicConnection.BINDER = binder;
 
         if(mediaPlayer==null){
             serviceStarted = true;
@@ -86,7 +85,7 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
                 Log.d("XXX_M.L.create","Some SIM is null");
             }
         }
-        Log.d("XXX_M.L_START_COM","Player is: "+mediaPlayer);
+        Log.d("XXX_M.L_START_COM", "Player is: " + mediaPlayer);
         return START_NOT_STICKY;
     }
 
@@ -99,8 +98,12 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return binder;
+        return null;
     }
+
+
+    public static LocalBinder getInterface(){return binder; }
+    public static boolean ready(){ return serviceStarted; }
 
     /** Called when MediaPlayer is ready */
     public void onPrepared(MediaPlayer player) {
@@ -195,6 +198,10 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
     public class LocalBinder extends Binder {
         public MediaLogic getService() {
             return MediaLogic.this;
+        }
+
+        public IBinder onBind(Intent intent) {
+            return binder;
         }
 
         public MediaPlayer getMediaPlayer(){ return mediaPlayer; }

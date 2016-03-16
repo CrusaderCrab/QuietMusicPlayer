@@ -37,14 +37,13 @@ public class MediaControls {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
-                if (binder != null) {
-                    if (binder.getMediaPlayer() != null) {
-                        MediaPlayer player = binder.getMediaPlayer();
-                        if (player != null && fromUser && binder.playerReady()) {
-                            player.seekTo(progress * 1000);
-                        }
+                if (MediaLogic.ready()) {
+                    MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+                    MediaPlayer player = binder.getMediaPlayer();
+                    if (player != null && fromUser && binder.playerReady()) {
+                        player.seekTo(progress * 1000);
                     }
+
                 }
             }
         };
@@ -54,9 +53,8 @@ public class MediaControls {
         return new Button.OnClickListener(){
 
             public void onClick(View view){
-                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
-                Log.d("XXXX", "binder: " + binder);
-                if (binder != null) {
+                if (MediaLogic.ready()) {
+                    MediaLogic.LocalBinder binder = MediaLogic.getInterface();
                     if (binder.getMediaPlayer() != null) {Log.d("XXXX", "media: " + binder.getMediaPlayer());
                         binder.setMusicWanted(true);
                         Button button = (Button) view;
@@ -89,9 +87,9 @@ public class MediaControls {
         return new Button.OnClickListener() {
 
             public void onClick(View view) {
-                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
-                if (binder != null) {
-                    if (binder.getMediaPlayer() != null && binder.playerReady()) {
+                if (MediaLogic.ready()) {
+                    MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+                    if (binder.playerReady()) {
                         binder.playNextSong();
                         playerPlaying = true;
                         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
@@ -105,9 +103,10 @@ public class MediaControls {
         return new Button.OnClickListener() {
 
             public void onClick(View view) {
-                MediaLogic.LocalBinder binder = MediaLogicConnection.getBinder();
-                if (binder != null) {
-                    if (binder.getMediaPlayer() != null && binder.playerReady()) {
+
+                if (MediaLogic.ready()) {
+                    MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+                    if (binder.playerReady()) {
                         binder.playPreviousSong();
                         playerPlaying = true;
                         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
@@ -130,13 +129,15 @@ public class MediaControls {
     }
 
     public static void setToSongName(TextView t){
-        MediaLogic.LocalBinder b = MediaLogicConnection.getBinder();
-        if(b!=null) {
-            String song = b.getCurrentSong().title;
-            if(song.length() > MAX_TITLE_LENGTH)
-                song = song.substring(0, MAX_TITLE_LENGTH);
-
-            t.setText(song);
+        if(MediaLogic.ready()) {
+            MediaLogic.LocalBinder b = MediaLogic.getInterface();
+            if (b.getCurrentSong() != null) {
+                String song = b.getCurrentSong().title;
+                if (song.length() > MAX_TITLE_LENGTH) {
+                    song = song.substring(0, MAX_TITLE_LENGTH);
+                }
+                t.setText(song);
+            }
         }
     }
 

@@ -19,18 +19,22 @@ public class DurationRunnable implements Runnable{
     }
     @Override
     public void run() {
-        binder = MediaLogicConnection.getBinder();
-        if(binder != null) {
-            if (binder.getMediaPlayer() != null) {
-                MediaPlayer player = binder.getMediaPlayer();
-                if(player.isPlaying()) {
-                    int maxRaw = player.getDuration() / 1000;
-                    int currentRaw = player.getCurrentPosition() / 1000;
-                    int maxMinutes = maxRaw/60; int maxSeconds = maxRaw%60;
-                    int curMinutes = currentRaw/60; int curSeconds = currentRaw%60;
-                    String cur = curMinutes + ":" + (curSeconds<10? "0"+curSeconds : ""+curSeconds);
-                    String max = maxMinutes + ":" + (maxSeconds<10? "0"+maxSeconds : ""+maxSeconds);
-                    text.setText(cur+"/"+max);
+        if(MediaLogic.ready()) {
+            MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+            if (binder != null) {
+                if (binder.getMediaPlayer() != null) {
+                    MediaPlayer player = binder.getMediaPlayer();
+                    if (player.isPlaying()) {
+                        int maxRaw = player.getDuration() / 1000;
+                        int currentRaw = player.getCurrentPosition() / 1000;
+                        int maxMinutes = maxRaw / 60;
+                        int maxSeconds = maxRaw % 60;
+                        int curMinutes = currentRaw / 60;
+                        int curSeconds = currentRaw % 60;
+                        String cur = curMinutes + ":" + (curSeconds < 10 ? "0" + curSeconds : "" + curSeconds);
+                        String max = maxMinutes + ":" + (maxSeconds < 10 ? "0" + maxSeconds : "" + maxSeconds);
+                        text.setText(cur + "/" + max);
+                    }
                 }
             }
         }

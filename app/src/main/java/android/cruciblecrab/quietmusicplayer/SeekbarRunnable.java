@@ -19,15 +19,13 @@ public class SeekbarRunnable implements Runnable{
     }
     @Override
     public void run() {
-        binder = MediaLogicConnection.getBinder();
-        if(binder != null) {
-            if (binder.getMediaPlayer() != null) {
-                MediaPlayer player = binder.getMediaPlayer();
-                if(player.isPlaying()) {
-                    seekBar.setMax(player.getDuration()/1000);
-                    int mCurrentPosition = player.getCurrentPosition() / 1000;
-                    seekBar.setProgress(mCurrentPosition);
-                }
+        if(MediaLogic.ready()) {
+            MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+            MediaPlayer player = binder.getMediaPlayer();
+            if(player.isPlaying()) {
+                seekBar.setMax(player.getDuration()/1000);
+                int mCurrentPosition = player.getCurrentPosition() / 1000;
+                seekBar.setProgress(mCurrentPosition);
             }
         }
         handler.postDelayed(this, 1000);

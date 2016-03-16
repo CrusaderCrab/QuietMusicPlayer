@@ -19,7 +19,6 @@ import java.util.logging.Handler;
 
 public class VolumeActivity extends AppCompatActivity {
 
-    MediaLogic.LocalBinder binder;
     TextView volumeText;
     SeekBar seekBar;
     android.os.Handler handler;
@@ -28,12 +27,12 @@ public class VolumeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_volume);
-        volumeText = (TextView)findViewById(R.id.volumetext);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        MediaLogicConnection connection = new MediaLogicConnection();
+
         Intent serviceIntent = new Intent(this, MediaLogic.class);
         startService(serviceIntent);
-        binder = MediaLogicConnection.getBinder();
+
+        volumeText = (TextView)findViewById(R.id.volumetext);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
         mediaControls = new MediaControls();
         handler = new android.os.Handler();
         VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
@@ -55,7 +54,6 @@ public class VolumeActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         VolumeController.init(this, volumeText);
-
     }
 
     @Override
@@ -72,7 +70,7 @@ public class VolumeActivity extends AppCompatActivity {
         Button playButton = (Button) findViewById(R.id.playbutton);
         //mediaControls.preparePlayButton(playButton);
         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
-        MediaControls.setToSongName((TextView)findViewById(R.id.songtext));
+        MediaControls.setToSongName((TextView) findViewById(R.id.songtext));
     }
 
     @Override
@@ -123,15 +121,17 @@ public class VolumeActivity extends AppCompatActivity {
     }
 
     public void volumeUpClick(View view) {
-        binder = MediaLogicConnection.getBinder();
-        float vol = binder.alterVolume(MediaLogic.VOLUME_STEP);
-        setVolumeText(vol);
+        if(MediaLogic.ready()) {
+            float vol = MediaLogic.getInterface().alterVolume(MediaLogic.VOLUME_STEP);
+            setVolumeText(vol);
+        }
     }
 
     public void volumeDownClick(View view) {
-        binder = MediaLogicConnection.getBinder();
-        float vol = binder.alterVolume(-MediaLogic.VOLUME_STEP);
-        setVolumeText(vol);
+        if(MediaLogic.ready()) {
+            float vol = MediaLogic.getInterface().alterVolume(-MediaLogic.VOLUME_STEP);
+            setVolumeText(vol);
+        }
     }
 
     private void setVolumeText(float vol) {
