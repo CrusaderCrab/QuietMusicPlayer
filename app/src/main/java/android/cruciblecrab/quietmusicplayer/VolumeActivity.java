@@ -33,24 +33,6 @@ public class VolumeActivity extends MediaControlsActivity {
 
         volumeText = (TextView)findViewById(R.id.volumetext);
         setupMediaControls();
-        /*seekBar = (SeekBar) findViewById(R.id.seekBar);
-        mediaControls = new MediaControls();
-        handler = new android.os.Handler();
-        VolumeActivity.this.runOnUiThread(new SeekbarRunnable(handler, seekBar));
-        seekBar.setOnSeekBarChangeListener(mediaControls.seekBarChangeListener());
-        TextView durationText = (TextView)findViewById(R.id.timetext);
-        VolumeActivity.this.runOnUiThread(new DurationRunnable(handler, durationText));
-
-        Button playButton = (Button) findViewById(R.id.playbutton);
-        playButton.setOnClickListener(mediaControls.playButtonListener());
-        //mediaControls.preparePlayButton(playButton);
-        MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
-        MediaControls.addPlayButton(playButton);
-        Button prevButton = (Button) findViewById(R.id.prevbutton);
-        prevButton.setOnClickListener(mediaControls.prevButtonListener());
-        Button nextButton = (Button) findViewById(R.id.nextbutton);
-        nextButton.setOnClickListener(mediaControls.nextButtonListener());
-        */
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
@@ -127,6 +109,11 @@ public class VolumeActivity extends MediaControlsActivity {
         intent.putExtra(ListActivity.TYPE_KEY, ListActivity.KEY_ARTISTS);
         intent.putExtra(ListActivity.EXTRA_INFO, ListActivity.NO_INFO);
         intent.putExtra(ListActivity.FILTER_MODE, MediaSearcher.MODE_NO_FILTER);
+        startActivity(intent);
+    }
+
+    public void playListButtonClick(View view){
+        Intent intent = new Intent(this, PlayListsActivity.class);
         startActivity(intent);
     }
 

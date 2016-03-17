@@ -53,7 +53,8 @@
 
             android:layout_height="match_parent"
             android:text="@string/playlists"
-            android:id="@+id/playlistbutton" />
+            android:id="@+id/playlistbutton"
+            android:onClick="playListButtonClick" />
 
         <Button
             android:layout_weight="1"

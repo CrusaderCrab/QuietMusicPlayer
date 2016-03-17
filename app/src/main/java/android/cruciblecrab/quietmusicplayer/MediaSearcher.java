@@ -28,6 +28,7 @@ public class MediaSearcher implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int MODE_ALBUM = 1;
     public static final int MODE_ARTIST = 3;
     public static final int MODE_NO_FILTER = 2;
+    public static final int MODE_PLAYLIST = 5;
     public static final String NO_INFO = "qmp.cruciblecrab.noinfo";
 
     private static final String[] PROJECTION_SONG = {

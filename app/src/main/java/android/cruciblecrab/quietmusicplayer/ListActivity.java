@@ -52,22 +52,7 @@ public class ListActivity extends MediaControlsActivity {
                         CursorWrapper selected = (CursorWrapper) (list.getItemAtPosition(myItemInt));
                         switch (mode) {
                             case KEY_SONGS:
-                                try {
-                                    if (MediaLogic.ready()) {
-                                        MediaLogic.LocalBinder binder = MediaLogic.getInterface();
-                                        if (binder != null) {
-                                            binder.setMusicWanted(true);
-                                            Button playButton = (Button) findViewById(R.id.playbutton);
-                                            //mediaControls.setButtonToUnpause(playButton);
-                                            MediaControls.setAllPlayButtons(true);
-                                            MediaControls.playerPlaying = true;
-                                            setSongList(myItemInt);
-                                            binder.startPlaying();
-                                        }
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                songClickListener(selected, myItemInt);
                                 break;
                             case KEY_ALBUMS:
                                 albumClickListener(selected);
@@ -116,6 +101,25 @@ public class ListActivity extends MediaControlsActivity {
         //mediaControls.preparePlayButton(playButton);
         MediaControls.setAllPlayButtons(MediaControls.playerPlaying);
         MediaControls.setToSongName((TextView) findViewById(R.id.songtext));
+    }
+
+    private void songClickListener(CursorWrapper selected, int myItemInt){
+        try {
+            if (MediaLogic.ready()) {
+                MediaLogic.LocalBinder binder = MediaLogic.getInterface();
+                if (binder != null) {
+                    binder.setMusicWanted(true);
+                    Button playButton = (Button) findViewById(R.id.playbutton);
+                    //mediaControls.setButtonToUnpause(playButton);
+                    MediaControls.setAllPlayButtons(true);
+                    MediaControls.playerPlaying = true;
+                    setSongList(myItemInt);
+                    binder.startPlaying();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void albumClickListener(CursorWrapper selected){
