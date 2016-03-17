@@ -42,20 +42,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="no song selected"
-        android:id="@+id/songtext"
-        android:layout_below="@+id/playbutton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/timetext"
-        android:ellipsize="end"
-        android:singleLine="true"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="0:00/0:00"
         android:id="@+id/timetext"
         android:layout_below="@+id/playbutton"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="no song selected"
+        android:id="@+id/songtext"
+        android:layout_below="@+id/playbutton"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/timetext"
+        android:gravity="right"
+        android:ellipsize="end"
+        android:singleLine="true"/>
 </RelativeLayout>
