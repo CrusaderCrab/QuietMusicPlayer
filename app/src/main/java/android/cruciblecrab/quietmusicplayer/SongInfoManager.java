@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class SongInfoManager {
     private static final String PREFS_NAME = "qmpCrusaderCrabPrefFile";
-    private static final String SONG_LIST_SER_FILE = "qmpCrusaderCrabSongList.ser";
+    private static final String SONG_LIST_JSON_FILE = "qmpCrusaderCrabSongList.json";
     private static final String SONG_POSITION_JSON_KEY = "com.cruciblecrab.songlist.json.position";
 
     public static final String KEY_VOLUME = "qmp.crusadercrab.sim.key.volume";
@@ -42,7 +42,7 @@ public class SongInfoManager {
 
 
     public static SongList getStoredSongList( Context c ) throws Exception{
-        FileInputStream fis = c.openFileInput(SONG_LIST_SER_FILE);
+        FileInputStream fis = c.openFileInput(SONG_LIST_JSON_FILE);
         StringBuffer fileContent = new StringBuffer("");
         byte[] buffer = new byte[1024];
         int n;
@@ -79,7 +79,7 @@ public class SongInfoManager {
 
             }
         }
-        FileOutputStream fos = c.openFileOutput(SONG_LIST_SER_FILE, Context.MODE_PRIVATE);
+        FileOutputStream fos = c.openFileOutput(SONG_LIST_JSON_FILE, Context.MODE_PRIVATE);
         fos.write(jsarray.toString().getBytes());
         fos.close();
     }
