@@ -53,7 +53,9 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             Bundle b = new Bundle();
             b.putFloat(SongInfoManager.KEY_VOLUME, volume);
             SongInfoManager.storeMiscData(b, this);
-            SongInfoManager.storeSongList(songs, songIndex, this);
+            try {
+                SongInfoManager.storeSongList(songs, songIndex, this);
+            }catch (Exception e){}
             Log.d("XXX_M.L.Destoryed", "Service Destroyed inside if");
             super.onDestroy();
         }
@@ -75,14 +77,17 @@ public class MediaLogic extends Service implements MediaPlayer.OnPreparedListene
             Bundle miscValues = SongInfoManager.retrieveMiscData(this);
             float savedVolume = miscValues.getFloat(SongInfoManager.KEY_VOLUME, DEFAULT_VOLUME);
             volume = savedVolume;
-            SongInfoManager.SongList sl = SongInfoManager.getStoredSongList(this);
-            if (sl != null && sl.songs != null) {
+            try {
+                SongInfoManager.SongList sl = SongInfoManager.getStoredSongList(this);
                 songs = sl.songs;
                 songIndex = sl.index;
                 songsReady = true;
-                Log.d("XXX_M.L.create","SIM LOADED SOMETHING CORRECTLY");
-            }else{
-                Log.d("XXX_M.L.create","Some SIM is null");
+                MediaControls.setAllSongNames();
+                Log.d("XXX_M.L.create", "SIM LOADED SOMETHING CORRECTLY");
+            }catch (Exception e){
+                songs = null;
+                songIndex = 0;
+                songsReady = false;
             }
         }
         Log.d("XXX_M.L_START_COM", "Player is: " + mediaPlayer);
