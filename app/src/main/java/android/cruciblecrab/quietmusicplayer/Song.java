@@ -1,5 +1,7 @@
 package android.cruciblecrab.quietmusicplayer;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,7 +28,9 @@ public class Song implements Serializable{
 
     public Song(JSONObject js)throws JSONException{
         this.title = js.optString(TITLE_JSON_KEY, TITLE_NO_VALUE);
-        this.id = js.optInt(TITLE_JSON_KEY, ID_NO_VALUE);
+        Log.d("XXXS got title", title);
+        this.id = js.optInt(ID_JSON_KEY, ID_NO_VALUE);
+        Log.d("XXXS got id", "" + id);
         if(title.equals(TITLE_NO_VALUE) || id==ID_NO_VALUE){
             throw new JSONException("Invalid JSONObject, doesn't contain Title and/or id mapping");
         }
