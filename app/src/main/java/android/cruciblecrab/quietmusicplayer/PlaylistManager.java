@@ -25,14 +25,7 @@ public class PlaylistManager {
 
     public static ArrayList<String> getPlayLists(Context c) throws Exception{
         FileInputStream fis = c.openFileInput(PLAYLIST_LIST_OF_PLAYLISTS_FILE);
-        StringBuffer fileContent = new StringBuffer("");
-        byte[] buffer = new byte[1024];
-        int n;
-        while ((n = fis.read(buffer)) != -1) {
-            fileContent.append(new java.lang.String(buffer, 0, n));
-        }
-        java.lang.String s = new java.lang.String(fileContent);
-        JSONArray js = new JSONArray(s);
+        JSONArray js = JSONFunctions.readInputStreamIntoJSONArray(fis);
         ArrayList<String> playListNames = getPlayListsFromJSON(js);
         fis.close();
         return playListNames;
@@ -69,32 +62,14 @@ public class PlaylistManager {
     public static ArrayList<Song> getPlaylist(int position) throws Exception{
         String fileName = playlistFileNames.get(position);
         FileInputStream fis = new FileInputStream(fileName);
-        StringBuffer fileContent = new StringBuffer("");
-        byte[] buffer = new byte[1024];
-        int n;
-        while ((n = fis.read(buffer)) != -1) {
-            fileContent.append(new String(buffer, 0, n));
-        }
-        String s = new String(fileContent);
-        JSONArray jsa = new JSONArray(s);
-
-        java.util.ArrayList<Song> songs = new ArrayList<Song>();
-        for(int i = 0; i < jsa.length(); i++){
-            JSONObject js = jsa.getJSONObject(i);
-            songs.add(new Song(js));
-        }
-        return songs;
+        JSONArray jsa = JSONFunctions.readInputStreamIntoJSONArray(fis);
+        return JSONFunctions.readSongsFromJSONArray(jsa);
     }
 
     public static void savePlayList(ArrayList<Song> songs, String name, Context c) throws Exception{
         String filename = name+"_playlist.json";
         File file = new File(c.getFilesDir(), filename);
-        JSONArray jsArray = new JSONArray();
-        for(Song s : songs){
-            try {
-                jsArray.put(s.toJSONObject());
-            }catch(JSONException e){}
-        }
+        JSONArray jsArray = JSONFunctions.readSongsIntoJSONArray(songs);
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(jsArray.toString().getBytes());
         fos.close();

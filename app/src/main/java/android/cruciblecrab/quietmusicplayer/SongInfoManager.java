@@ -43,27 +43,17 @@ public class SongInfoManager {
 
     public static SongList getStoredSongList( Context c ) throws Exception{
         FileInputStream fis = c.openFileInput(SONG_LIST_JSON_FILE);
-        StringBuffer fileContent = new StringBuffer("");
-        byte[] buffer = new byte[1024];
-        int n;
-        while ((n = fis.read(buffer)) != -1) {
-            fileContent.append(new String(buffer, 0, n));
-        }
-        String s = new String(fileContent);
-        JSONArray js = new JSONArray(s);
+        JSONArray js = JSONFunctions.readInputStreamIntoJSONArray(fis);
         SongList songs = jsonToSongList(js);
         fis.close();
         return songs;
     }
 
     public static SongList jsonToSongList(JSONArray json) throws JSONException {
-        ArrayList<Song> songs = new ArrayList<Song>();
+
         JSONObject jsPosition = json.getJSONObject(0);
         int pos = jsPosition.getInt(SONG_POSITION_JSON_KEY);
-        for(int i = 1; i < json.length(); i++){
-            JSONObject js = json.getJSONObject(i);
-            songs.add(new Song(js));
-        }
+        ArrayList<Song> songs = JSONFunctions.readSongsFromJSONArray(json, 1);
         return new SongList(songs, pos);
     }
 
